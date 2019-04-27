@@ -1,4 +1,4 @@
-package com.core;
+package com.rmi.core;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;

@@ -1,5 +1,6 @@
 package com.rmi.core;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.FatalBeanException;
@@ -10,26 +11,27 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.remoting.rmi.RmiServiceExporter;
 
 import com.rmi.anno.RemoteService;
-import com.rmi.anno.RmiServiceProperty;
 
 
 public class ServiceAnnotationBeanPostProcessor extends InstantiationAwareBeanPostProcessorAdapter implements PriorityOrdered {
 
     private int order = Ordered.LOWEST_PRECEDENCE - 1;
-
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        RemoteService service = AnnotationUtils.findAnnotation(bean.getClass(), RemoteService.class);
+        RemoteService remoteService = AnnotationUtils.findAnnotation(bean.getClass(), RemoteService.class);
         Object resultBean = bean;
-        if (null != service) {
+        if (null != remoteService) {
+                Class<?> service = bean.getClass();
                 RmiServiceExporter rmiServiceExporter = new RmiServiceExporter();
-                rmiServiceExporter.setServiceInterface(service.serviceInterface());
+                rmiServiceExporter.setServiceInterface(service.getInterfaces()[0]);
                 rmiServiceExporter.setService(bean);
-                RmiServiceProperty rmiServiceProperty = bean.getClass().getAnnotation(RmiServiceProperty.class);
-                if (rmiServiceProperty != null) {
-                    rmiServiceExporter.setRegistryPort(rmiServiceProperty.registryPort());
+                Integer rmiPort=(Integer) PropertiesUtils.getCommonYml("rmi.port");
+                System.out.println("---------rmiPort>>>>>>>>>>>>>>>>>"+rmiPort);
+                if(rmiPort==null) {
+                	rmiPort = Registry.REGISTRY_PORT;
                 }
-                String serviceName = service.serviceInterface().getSimpleName();
+                rmiServiceExporter.setRegistryPort(rmiPort);
+                String serviceName = service.getInterfaces()[0].getSimpleName();
                 if (serviceName.startsWith("/")) {
                     serviceName = serviceName.substring(1);
                 }
@@ -40,7 +42,7 @@ public class ServiceAnnotationBeanPostProcessor extends InstantiationAwareBeanPo
                     throw new FatalBeanException("Exception initializing RmiServiceExporter", remoteException);
                 }
                 resultBean = rmiServiceExporter;
-            }
+         }
         return resultBean;
     }
 

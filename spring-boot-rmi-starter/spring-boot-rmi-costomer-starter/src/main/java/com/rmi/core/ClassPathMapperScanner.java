@@ -1,4 +1,4 @@
-package com.core;
+package com.rmi.core;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -20,6 +21,7 @@ import org.springframework.core.type.filter.TypeFilter;
 /**
  * 扫描器，通过doScan方法将basePackages中的class，扫描进spring容器中
  */
+
 public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
     private MyRmiProxyFactory<Object> mapperFactoryBean = new MyRmiProxyFactory<Object>();
