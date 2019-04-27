@@ -11,7 +11,6 @@
   <url>http://maven.apache.org</url>
 
   <modules>
-  	<module>spring-boot-rmi-costomer-common-starter</module>
   	<module>spring-boot-rmi-costomer-starter</module>
   	<module>spring-boot-rmi-provider-starter</module>
   </modules>
